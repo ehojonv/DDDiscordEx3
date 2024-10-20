@@ -17,7 +17,7 @@ public class Usuario {
     }
 
     public void enviarMensagem(String mensagem, Servidor servidor) {
-        servidor.addMensagem(new Mensagem(this,mensagem));
+        servidor.addMensagem(new Mensagem(this, mensagem));
     }
 
     // Métodos gerais

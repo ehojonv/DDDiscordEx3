@@ -2,10 +2,10 @@ package main;
 
 import models.Servidor;
 import models.Usuario;
+import services.Menu;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class Main {
     private static final List<Usuario> usuarios = new ArrayList<>();
@@ -32,7 +32,6 @@ public class Main {
         var server4 = new Servidor("Servidor de Arte");
         addServer(server4);
 
-
         user1.entrarServidor(server1);
         user1.entrarServidor(server2);
         user1.entrarServidor(server3);
@@ -48,61 +47,7 @@ public class Main {
         user4.entrarServidor(server3);
         user4.entrarServidor(server4);
 
-//        server1.getMensagemsServidor().forEach(m -> System.out.printf("%s - %s: %s\n",
-//                m.getDataEnvio().format(DateTimeFormatter.ofPattern("HH:mm")),
-//                m.getAutorMensagem().getNomeUsuario(),
-//                m.getConteudo()));
-
-        var scanner = new Scanner(System.in);
-        var opcao = -1;
-        Servidor servidorEscolhido;
-        Usuario usuarioEscolhido = null;
-
-        while (opcao != 0) {
-            while (usuarioEscolhido == null && opcao != 0) {
-                System.out.println("Escolha o usuario (1-4) ou 0 para sair");
-                opcao = scanner.nextInt();
-                switch (opcao) {
-                    case 0:
-                        System.out.println("Saindo");
-                        break;
-                    case 1:
-                        usuarioEscolhido = user1;
-                        break;
-                    default:
-                        System.out.println("ERRO");
-                        break;
-                }
-            }
-
-            while (opcao != 0) {
-                System.out.println("Digite que servidore quer checar (1-4) ou 0 para sair");
-                opcao = scanner.nextInt();
-
-                switch (opcao) {
-                    case 0:
-                        System.out.println("Saindo");
-                        break;
-                    case 1:
-                        servidorEscolhido = server1;
-                        while (true) {
-                            server1.mostrarMensagens();
-                            System.out.println("Digite sua mensagem ou 0 para sair:");
-                            var texto = scanner.nextLine();
-                            if (texto.isEmpty()) {
-                                scanner.nextLine();
-                            } else if (texto.equals("0")) {
-                                opcao = 0;
-                                break;
-                            } else {
-                                usuarioEscolhido.enviarMensagem(texto, servidorEscolhido);
-                            }
-
-                        }
-                        break;
-                }
-            }
-        }
+        new Menu().iniciarMenu();
     }
 
     public static void addUsuario(Usuario usuario) {
@@ -111,6 +56,14 @@ public class Main {
 
     public static void addServer(Servidor servidor) {
         servidores.add(servidor);
+    }
+
+    public static void addUsuario(String nomeUsuario) {
+        usuarios.add(new Usuario(nomeUsuario));
+    }
+
+    public static void addServer(String nomeServidor) {
+        servidores.add(new Servidor(nomeServidor));
     }
 
     public static List<Usuario> getListaUsuarios() {

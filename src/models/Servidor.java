@@ -27,10 +27,15 @@ public class Servidor {
     }
 
     public void mostrarMensagens() {
-        mensagemsServidor.forEach(m -> System.out.printf("%s - %s: %s\n",
-                m.getDataEnvio().format(DateTimeFormatter.ofPattern("HH:mm")),
-                m.getAutorMensagem().getNomeUsuario(),
-                m.getConteudo()));
+        System.out.printf("\nServidor \"%s\":\n", nomeServidor);
+        if (mensagemsServidor.isEmpty()) {
+            System.out.println("Seja o primeiro a mandar mensagem!");
+        } else {
+            mensagemsServidor.forEach(m -> System.out.printf("%s - %s: %s\n",
+                    m.getDataEnvio().format(DateTimeFormatter.ofPattern("HH:mm")),
+                    m.getAutorMensagem().getNomeUsuario(),
+                    m.getConteudo()));
+        }
     }
 
     //Métodos gerais
