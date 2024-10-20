@@ -24,6 +24,7 @@ public class Menu {
         List<Servidor> servidoresDoUsuario;
         while (opcao != 0 && usuarioEscolhido == null) {
             try {
+
                 System.out.println("\nLogar com qual usuario:");
                 usuarios.forEach(u -> System.out.printf("%d. %s\n", (usuarios.indexOf(u) + 1), u.getNomeUsuario()));
                 System.out.println("""
@@ -46,6 +47,7 @@ public class Menu {
                         continue;
                     }
                 }
+
                 escolherServidor(servidoresDoUsuario);
             } catch (InputMismatchException e) {
                 scanner.nextLine();

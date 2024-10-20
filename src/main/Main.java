@@ -13,6 +13,7 @@ public class Main {
 
     public static void main(String[] args) {
 
+        // Criação e adição ao sistema dos usuários
         var user1 = new Usuario("João");
         addUsuario(user1);
         var user2 = new Usuario("Maria");
@@ -22,7 +23,7 @@ public class Main {
         var user4 = new Usuario("Luana");
         addUsuario(user4);
 
-
+        // Criação e adição ao sistema dos servidores
         var server1 = new Servidor("Servidor Legal");
         addServer(server1);
         var server2 = new Servidor("Servidor Da Familia");
@@ -32,21 +33,26 @@ public class Main {
         var server4 = new Servidor("Servidor de Arte");
         addServer(server4);
 
+        // Usuário 1 entra em servidores
         user1.entrarServidor(server1);
         user1.entrarServidor(server2);
         user1.entrarServidor(server3);
 
+        // Usuário 2 entra em servidores
         user2.entrarServidor(server1);
         user2.entrarServidor(server2);
 
+        // Usuário 3 entra em servidores
         user3.entrarServidor(server1);
         user3.entrarServidor(server2);
         user3.entrarServidor(server3);
         user3.entrarServidor(server4);
 
+        // Usuário 4 entra em servidores
         user4.entrarServidor(server3);
         user4.entrarServidor(server4);
 
+        // Iniciar menu
         new Menu().iniciarMenu();
     }
 
