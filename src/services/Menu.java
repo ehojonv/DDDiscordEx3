@@ -5,9 +5,12 @@ import models.Mensagem;
 import models.Servidor;
 import models.Usuario;
 
+import java.text.Normalizer;
+import java.util.Comparator;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Menu {
 
@@ -44,7 +47,7 @@ public class Menu {
                                 .filter(s -> s.getUsuariosServidor().contains(usuarioEscolhido))
                                 .toList();
                     } else {
-                       System.out.println("\033[91mOpção Inválida\033[39m");
+                        System.out.println("\033[91mOpção Inválida\033[39m");
                         continue;
                     }
                 }
@@ -76,7 +79,7 @@ public class Menu {
                         Servidor servidorEscolhido = servidoresDoUsuario.get(opcao - 1);
                         conversarNoServidor(servidorEscolhido);
                     } else {
-                       System.out.println("\033[91mOpção Inválida\033[39m");
+                        System.out.println("\033[91mOpção Inválida\033[39m");
                         continue;
                     }
                 }
@@ -92,7 +95,7 @@ public class Menu {
         while (!(0 <= opcao && opcao <= 2)) {
             try {
                 System.out.println("""
-                        
+                                                
                         Logar em um novo:
                         1. Servidor
                         2. Usuário
@@ -110,7 +113,7 @@ public class Menu {
                         usuarioEscolhido = null;
                         break;
                     default:
-                       System.out.println("\033[91mOpção Inválida\033[39m");
+                        System.out.println("\033[91mOpção Inválida\033[39m");
                         break;
                 }
             } catch (InputMismatchException e) {
@@ -143,10 +146,13 @@ public class Menu {
         opcao = -1;
         while (opcao != 0) {
             System.out.println("""
+                                        
+                    Menu de organização do DDDiscord
                     1. Filtrar/Ordenar mensagens
                     2. Estatisticas servidores
                     0. Sair
-                    """);
+                    ======================================
+                    Digite a opção desejada:""");
             opcao = scanner.nextInt();
             switch (opcao) {
                 case 0:
@@ -155,35 +161,34 @@ public class Menu {
                     exibirMenuMensagens();
                     break;
                 case 2:
-                    exibirEstatisticasServidores();
+                    exibirMenuEstatisticasServidores();
                     break;
                 default:
                     System.out.println("ero");
                     break;
             }
         }
-    }
-
-    private void exibirEstatisticasServidores() {
-
     }
 
     private void exibirMenuMensagens() {
         while (opcao != 0) {
             System.out.println("""
+                                        
+                    Deseja fazer o que:
                     1. Filtrar mensagens
                     2. Ordenar mensagens
                     0. Sair
-                    """);
+                    ======================================
+                    Digite a opção desejada:""");
             opcao = scanner.nextInt();
             switch (opcao) {
                 case 0:
                     break;
                 case 1:
-                    filtrarMensagens();
+                    exibirMenuFiltrarMensagens();
                     break;
                 case 2:
-                    ordenarMensagens();
+                    exibirMenuOrdenarMensagens();
                     break;
                 default:
                     System.out.println("ero");
@@ -192,18 +197,16 @@ public class Menu {
         }
     }
 
-    private void ordenarMensagens() {
-
-    }
-
-    private void filtrarMensagens() {
+    private void exibirMenuFiltrarMensagens() {
         while (opcao != 0) {
             System.out.println("""
-                    filtrar por
+                                        
+                    Filtrar por:
                     1. Autor
                     2. Texto
                     0. Sair
-                    """);
+                    ======================================
+                    Digite a opção desejada:""");
             opcao = scanner.nextInt();
             switch (opcao) {
                 case 0:
@@ -221,26 +224,123 @@ public class Menu {
         }
     }
 
-    private void filtrarMensagensPorTermo() {
-
-    }
-
     private void filtrarMensagensPorAutor() {
-        System.out.println("Digite o nome do autor");
-        var nomeAutor = scanner.next();
+        System.out.println("\nDigite o nome do autor:");
+        var nomeAutor = Normalizer.normalize(scanner.next(), Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "");
         var autor = usuarios.stream()
-                .filter(u -> u.getNomeUsuario().equalsIgnoreCase(nomeAutor))
+                .filter(u -> Normalizer.normalize(u.getNomeUsuario(), Normalizer.Form.NFD)
+                        .replaceAll("\\p{M}", "")
+                        .equalsIgnoreCase(nomeAutor))
                 .toList().getFirst();
-        System.out.println(autor);
 
-        servidores.stream()
+        var servidoresDoUsuario = servidores.stream()
                 .filter(s -> s.getUsuariosServidor().contains(autor))
-                .toList()        //MUDAR AQUI OLHA <<========================================================================
-                .forEach(s -> {
-                    System.out.println("Servidor: " + s.getNomeServidor());
-                    s.getMensagemsServidor().stream()
-                            .filter(m -> m.getAutorMensagem() == autor)
-                            .forEach(Mensagem::mostrarMensagem);
-                });
+                .collect(Collectors.toList());
+
+        servidoresDoUsuario.removeIf(servidor -> servidor.getMensagemsServidor().stream()
+                .noneMatch(s -> s.getAutorMensagem() == autor));
+
+        System.out.println("Filtrando mensagens de " + autor.getNomeUsuario() + ":");
+        servidoresDoUsuario.forEach(s -> {
+            System.out.println("\nServidor: " + s.getNomeServidor());
+            s.getMensagemsServidor().stream()
+                    .filter(m -> m.getAutorMensagem() == autor)
+                    .forEach(Mensagem::mostrarMensagem);
+        });
     }
+
+    private void filtrarMensagensPorTermo() {
+        System.out.println("\nDigite o termo:");
+        var termo = scanner.next();
+
+        var servidoresComTermo = servidores.stream()
+                .filter(s -> s.getMensagemsServidor().stream()
+                        .anyMatch(m -> m.getConteudo().contains(termo)))
+                .toList();
+
+        servidoresComTermo.forEach(s -> {
+            System.out.println("\nServidor: " + s.getNomeServidor());
+            s.getMensagemsServidor().stream()
+                    .filter(m -> m.getConteudo().contains(termo))
+                    .forEach(Mensagem::mostrarMensagem);
+        });
+    }
+
+    private void exibirMenuOrdenarMensagens() {
+        while (opcao != 0) {
+            System.out.println("""
+                                        
+                    Deseja Ordenar por:
+                    1. Data
+                    2. Autor
+                    0. Sair
+                    ======================================
+                    Digite a opção desejada:""");
+            opcao = scanner.nextInt();
+            switch (opcao) {
+                case 0:
+                    break;
+                case 1:
+                    ordenarMensagensPorData();
+                    break;
+                case 2:
+                    ordenarMensagensPorAutor();
+                    break;
+                default:
+                    System.out.println("ero");
+                    break;
+            }
+        }
+
+    }
+
+    private void ordenarMensagensPorData() {
+        servidores.forEach(s -> {
+            if (!s.getMensagemsServidor().isEmpty()) {
+                System.out.println("\nServidor: " + s.getNomeServidor());
+                s.getMensagemsServidor().stream()
+                        .sorted(Comparator.comparing(Mensagem::getDataEnvio))
+                        .forEach(Mensagem::mostrarMensagem);
+            }
+        });
+    }
+
+    private void ordenarMensagensPorAutor() {
+        System.out.println("\nDigite o nome do autor:");
+        var nomeAutor = Normalizer.normalize(scanner.next(), Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "");
+        var autor = usuarios.stream()
+                .filter(u -> Normalizer.normalize(u.getNomeUsuario(), Normalizer.Form.NFD)
+                        .replaceAll("\\p{M}", "")
+                        .equalsIgnoreCase(nomeAutor))
+                .toList().getFirst();
+
+        servidores.forEach(s -> {
+            if (!s.getMensagemsServidor().isEmpty() &&
+                    !s.getMensagemsServidor().stream()
+                    .filter(m -> m.getAutorMensagem() == autor)
+                    .toList().isEmpty()) {
+
+                System.out.println("\nServidor: " + s.getNomeServidor());
+
+                var mensagemsDoAutor = s.getMensagemsServidor().stream()
+                        .filter(m -> m.getAutorMensagem() == autor)
+                        .toList();
+
+                if (!mensagemsDoAutor.isEmpty()) {
+                    mensagemsDoAutor.stream()
+                            .sorted(Comparator.comparing(m -> m.getAutorMensagem() == autor))
+                            .forEach(Mensagem::mostrarMensagem);
+                }
+            }
+        });
+
+    }
+
+    private void exibirMenuEstatisticasServidores() {
+
+    }
+
+
 }
