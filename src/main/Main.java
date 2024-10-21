@@ -53,7 +53,8 @@ public class Main {
         user4.entrarServidor(server4);
 
         // Iniciar menu
-        new Menu().iniciarMenu();
+        new Menu().iniciarMenuUsuarios();
+        new Menu().iniciarMenuAdm();
     }
 
     public static void addUsuario(Usuario usuario) {

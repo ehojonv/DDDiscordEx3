@@ -1,6 +1,7 @@
 package models;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Mensagem {
@@ -8,6 +9,10 @@ public class Mensagem {
     private LocalDateTime dataEnvio;
     private Usuario autorMensagem;
     private String conteudo;
+
+    public void mostrarMensagem() {
+        System.out.printf("%s - %s: %s\n",dataEnvio.format(DateTimeFormatter.ofPattern("HH:mm")),autorMensagem.getNomeUsuario(),conteudo);
+    }
 
     //Metodos gerais
 

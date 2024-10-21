@@ -27,14 +27,11 @@ public class Servidor {
     }
 
     public void mostrarMensagens() {
-        System.out.printf("\nServidor \"%s\":\n", nomeServidor);
+        System.out.printf("\nServidor \033[1;4m\"%s\"\033[22;24m:\n", nomeServidor);
         if (mensagemsServidor.isEmpty()) {
-            System.out.println("Seja o primeiro a mandar mensagem!");
+            System.out.println("\033[100;3;30mSeja o primeiro a mandar mensagem!\033[49;23;39m");
         } else {
-            mensagemsServidor.forEach(m -> System.out.printf("%s - %s: %s\n",
-                    m.getDataEnvio().format(DateTimeFormatter.ofPattern("HH:mm")),
-                    m.getAutorMensagem().getNomeUsuario(),
-                    m.getConteudo()));
+            mensagemsServidor.forEach(Mensagem::mostrarMensagem);
         }
     }
 

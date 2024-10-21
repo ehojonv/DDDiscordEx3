@@ -1,6 +1,7 @@
 package services;
 
 import main.Main;
+import models.Mensagem;
 import models.Servidor;
 import models.Usuario;
 
@@ -16,7 +17,8 @@ public class Menu {
     private final Scanner scanner = new Scanner(System.in);
     private Usuario usuarioEscolhido = null;
 
-    public void iniciarMenu() {
+    // Inicia menu de usuários
+    public void iniciarMenuUsuarios() {
         escolherUsuario();
     }
 
@@ -24,8 +26,7 @@ public class Menu {
         List<Servidor> servidoresDoUsuario;
         while (opcao != 0 && usuarioEscolhido == null) {
             try {
-
-                System.out.println("\nLogar com qual usuario:");
+                System.out.println("Bem vindo ao \033[1;4mDDDiscord\033[22;24m\nGostaria de logar com qual usuario:");
                 usuarios.forEach(u -> System.out.printf("%d. %s\n", (usuarios.indexOf(u) + 1), u.getNomeUsuario()));
                 System.out.println("""
                         0. Logoff
@@ -34,16 +35,16 @@ public class Menu {
                 opcao = scanner.nextInt();
 
                 if (opcao == 0) {
-                    System.out.println("Saindo...");
+                    System.out.println("\033[93mSaindo...\033[39m");
                     continue;
                 } else {
-                    if (1 <= opcao && opcao <= usuarios.size() + 1) {
+                    if (1 <= opcao && opcao <= usuarios.size()) {
                         usuarioEscolhido = usuarios.get(opcao - 1);
                         servidoresDoUsuario = servidores.stream()
                                 .filter(s -> s.getUsuariosServidor().contains(usuarioEscolhido))
                                 .toList();
                     } else {
-                        System.out.println("Opção Inválida");
+                       System.out.println("\033[91mOpção Inválida\033[39m");
                         continue;
                     }
                 }
@@ -51,7 +52,7 @@ public class Menu {
                 escolherServidor(servidoresDoUsuario);
             } catch (InputMismatchException e) {
                 scanner.nextLine();
-                System.out.println("Valor inválido");
+                System.out.println("\033[91mValor Inválido\033[39m");
             }
         }
     }
@@ -59,7 +60,7 @@ public class Menu {
     private void escolherServidor(List<Servidor> servidoresDoUsuario) {
         while (opcao != 0 && opcao != -1) {
             try {
-                System.out.println("\nEscolha um servidor para entrar:");
+                System.out.println("\nEscolha um \033[4mservidor\033[24m para entrar:");
                 servidoresDoUsuario.forEach(s -> System.out.printf("%d. %s\n", (servidoresDoUsuario.indexOf(s) + 1), s.getNomeServidor()));
                 System.out.println("""
                         0. Logoff
@@ -68,21 +69,21 @@ public class Menu {
                 opcao = scanner.nextInt();
 
                 if (opcao == 0) {
-                    System.out.println("Saindo...");
+                    System.out.println("\033[93mSaindo...\033[39m");
                     continue;
                 } else {
-                    if (1 <= opcao && opcao <= (servidoresDoUsuario.size() + 1)) {
+                    if (1 <= opcao && opcao <= servidoresDoUsuario.size()) {
                         Servidor servidorEscolhido = servidoresDoUsuario.get(opcao - 1);
                         conversarNoServidor(servidorEscolhido);
                     } else {
-                        System.out.println("Opção Inválida");
+                       System.out.println("\033[91mOpção Inválida\033[39m");
                         continue;
                     }
                 }
                 menuDeTroca();
             } catch (InputMismatchException e) {
                 scanner.nextLine();
-                System.out.println("Valor Inválido");
+                System.out.println("\033[91mValor Inválido\033[39m");
             }
         }
     }
@@ -101,7 +102,7 @@ public class Menu {
                 opcao = scanner.nextInt();
                 switch (opcao) {
                     case 0:
-                        System.out.println("Saindo...");
+                        System.out.println("\033[93mSaindo...\033[39m");
                         break;
                     case 1:
                         break;
@@ -109,12 +110,12 @@ public class Menu {
                         usuarioEscolhido = null;
                         break;
                     default:
-                        System.out.println("Opção inválida");
+                       System.out.println("\033[91mOpção Inválida\033[39m");
                         break;
                 }
             } catch (InputMismatchException e) {
                 scanner.nextLine();
-                System.out.println("Valor inválido");
+                System.out.println("\033[91mValor Inválido\033[39m");
             }
         }
         if (opcao == 2) {
@@ -136,5 +137,110 @@ public class Menu {
                 }
             }
         }
+    }
+
+    public void iniciarMenuAdm() {
+        opcao = -1;
+        while (opcao != 0) {
+            System.out.println("""
+                    1. Filtrar/Ordenar mensagens
+                    2. Estatisticas servidores
+                    0. Sair
+                    """);
+            opcao = scanner.nextInt();
+            switch (opcao) {
+                case 0:
+                    break;
+                case 1:
+                    exibirMenuMensagens();
+                    break;
+                case 2:
+                    exibirEstatisticasServidores();
+                    break;
+                default:
+                    System.out.println("ero");
+                    break;
+            }
+        }
+    }
+
+    private void exibirEstatisticasServidores() {
+
+    }
+
+    private void exibirMenuMensagens() {
+        while (opcao != 0) {
+            System.out.println("""
+                    1. Filtrar mensagens
+                    2. Ordenar mensagens
+                    0. Sair
+                    """);
+            opcao = scanner.nextInt();
+            switch (opcao) {
+                case 0:
+                    break;
+                case 1:
+                    filtrarMensagens();
+                    break;
+                case 2:
+                    ordenarMensagens();
+                    break;
+                default:
+                    System.out.println("ero");
+                    break;
+            }
+        }
+    }
+
+    private void ordenarMensagens() {
+
+    }
+
+    private void filtrarMensagens() {
+        while (opcao != 0) {
+            System.out.println("""
+                    filtrar por
+                    1. Autor
+                    2. Texto
+                    0. Sair
+                    """);
+            opcao = scanner.nextInt();
+            switch (opcao) {
+                case 0:
+                    break;
+                case 1:
+                    filtrarMensagensPorAutor();
+                    break;
+                case 2:
+                    filtrarMensagensPorTermo();
+                    break;
+                default:
+                    System.out.println("ero");
+                    break;
+            }
+        }
+    }
+
+    private void filtrarMensagensPorTermo() {
+
+    }
+
+    private void filtrarMensagensPorAutor() {
+        System.out.println("Digite o nome do autor");
+        var nomeAutor = scanner.next();
+        var autor = usuarios.stream()
+                .filter(u -> u.getNomeUsuario().equalsIgnoreCase(nomeAutor))
+                .toList().getFirst();
+        System.out.println(autor);
+
+        servidores.stream()
+                .filter(s -> s.getUsuariosServidor().contains(autor))
+                .toList()        //MUDAR AQUI OLHA <<========================================================================
+                .forEach(s -> {
+                    System.out.println("Servidor: " + s.getNomeServidor());
+                    s.getMensagemsServidor().stream()
+                            .filter(m -> m.getAutorMensagem() == autor)
+                            .forEach(Mensagem::mostrarMensagem);
+                });
     }
 }
