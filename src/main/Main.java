@@ -52,9 +52,10 @@ public class Main {
         user4.entrarServidor(server3);
         user4.entrarServidor(server4);
 
-        // Iniciar menu
+        // Inicia os menus
         new Menu().iniciarMenuUsuarios();
-        new Menu().iniciarMenuAdm();
+        System.out.println("x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-");
+        new Menu().iniciarMenuOrganizacao();
     }
 
     public static void addUsuario(Usuario usuario) {

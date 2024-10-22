@@ -6,10 +6,7 @@ import models.Servidor;
 import models.Usuario;
 
 import java.text.Normalizer;
-import java.util.Comparator;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Menu {
@@ -58,7 +55,7 @@ public class Menu {
                 System.out.println("\033[91mValor Inválido\033[39m");
             }
         }
-    }
+    }// Define usuário logado
 
     private void escolherServidor(List<Servidor> servidoresDoUsuario) {
         while (opcao != 0 && opcao != -1) {
@@ -89,13 +86,29 @@ public class Menu {
                 System.out.println("\033[91mValor Inválido\033[39m");
             }
         }
-    }
+    }// Define servidor logado
+
+    private void conversarNoServidor(Servidor servidorEscolhido) {
+        scanner.nextLine();
+        while (opcao != -1) {
+            servidorEscolhido.mostrarMensagens();
+            System.out.println("Digite sua mensagem ou 0 para logoff:");
+            var texto = scanner.nextLine();
+            if (!texto.isEmpty()) {
+                if (texto.equals("0")) {
+                    opcao = -1;
+                } else {
+                    usuarioEscolhido.enviarMensagem(texto, servidorEscolhido);
+                }
+            }
+        }
+    }// Conversa no servidor ou vai para a tela de troca
 
     private void menuDeTroca() {
         while (!(0 <= opcao && opcao <= 2)) {
             try {
                 System.out.println("""
-                                                
+                        
                         Logar em um novo:
                         1. Servidor
                         2. Usuário
@@ -124,105 +137,114 @@ public class Menu {
         if (opcao == 2) {
             opcao = -1;
         }
-    }
+    }// Faz a troca de servidor/usuário ou logoff do sistema
 
-    private void conversarNoServidor(Servidor servidorEscolhido) {
-        scanner.nextLine();
-        while (opcao != -1) {
-            servidorEscolhido.mostrarMensagens();
-            System.out.println("Digite sua mensagem ou 0 para logoff:");
-            var texto = scanner.nextLine();
-            if (!texto.isEmpty()) {
-                if (texto.equals("0")) {
-                    opcao = -1;
-                } else {
-                    usuarioEscolhido.enviarMensagem(texto, servidorEscolhido);
-                }
-            }
-        }
-    }
-
-    public void iniciarMenuAdm() {
-        opcao = -1;
+    // Inicia menu de organização
+    public void iniciarMenuOrganizacao() {
         while (opcao != 0) {
-            System.out.println("""
-                                        
-                    Menu de organização do DDDiscord
-                    1. Filtrar/Ordenar mensagens
-                    2. Estatisticas servidores
-                    0. Sair
-                    ======================================
-                    Digite a opção desejada:""");
-            opcao = scanner.nextInt();
-            switch (opcao) {
-                case 0:
-                    break;
-                case 1:
-                    exibirMenuMensagens();
-                    break;
-                case 2:
-                    exibirMenuEstatisticasServidores();
-                    break;
-                default:
-                    System.out.println("ero");
-                    break;
+            opcao = -1;
+            try {
+                System.out.println("""    
+                        
+                        Menu de organização do \033[1;4mDDDiscord\033[22;24m
+                        1. Filtrar/Ordenar mensagens
+                        2. Estatisticas servidores
+                        0. Sair
+                        ======================================
+                        Digite a opção desejada:""");
+                opcao = scanner.nextInt();
+                switch (opcao) {
+                    case 0:
+                        System.out.println("\033[93mSaindo...\033[39m");
+                        break;
+                    case 1:
+                        exibirMenuMensagens();
+                        break;
+                    case 2:
+                        exibirEstatisticasServidores();
+                        break;
+                    default:
+                        System.out.println("\033[91mOpção Inválida\033[39m");
+                        break;
+                }
+            } catch (InputMismatchException e) {
+                scanner.nextLine();
+                System.out.println("\033[91mValor Inválido\033[39m");
             }
         }
     }
 
     private void exibirMenuMensagens() {
-        while (opcao != 0) {
-            System.out.println("""
-                                        
-                    Deseja fazer o que:
-                    1. Filtrar mensagens
-                    2. Ordenar mensagens
-                    0. Sair
-                    ======================================
-                    Digite a opção desejada:""");
-            opcao = scanner.nextInt();
-            switch (opcao) {
-                case 0:
-                    break;
-                case 1:
-                    exibirMenuFiltrarMensagens();
-                    break;
-                case 2:
-                    exibirMenuOrdenarMensagens();
-                    break;
-                default:
-                    System.out.println("ero");
-                    break;
+        while (opcao != 0 && opcao != 3) {
+            try {
+                System.out.println("""
+                        
+                        Deseja fazer o que:
+                        1. Filtrar mensagens
+                        2. Ordenar mensagens
+                        3. Voltar ao menu principal
+                        0. Sair
+                        ======================================
+                        Digite a opção desejada:""");
+                opcao = scanner.nextInt();
+                switch (opcao) {
+                    case 0:
+                        System.out.println("\033[93mSaindo...\033[39m");
+                        break;
+                    case 1:
+                        exibirMenuFiltrarMensagens();
+                        break;
+                    case 2:
+                        exibirMenuOrdenarMensagens();
+                        break;
+                    case 3:
+                        break;
+                    default:
+                        System.out.println("\033[91mOpção Inválida\033[39m");
+                        break;
+                }
+            } catch (InputMismatchException e) {
+                scanner.nextLine();
+                System.out.println("\033[91mValor Inválido\033[39m");
             }
         }
-    }
+    }// Exibe as opções de organização das mensagens
 
     private void exibirMenuFiltrarMensagens() {
-        while (opcao != 0) {
-            System.out.println("""
-                                        
-                    Filtrar por:
-                    1. Autor
-                    2. Texto
-                    0. Sair
-                    ======================================
-                    Digite a opção desejada:""");
-            opcao = scanner.nextInt();
-            switch (opcao) {
-                case 0:
-                    break;
-                case 1:
-                    filtrarMensagensPorAutor();
-                    break;
-                case 2:
-                    filtrarMensagensPorTermo();
-                    break;
-                default:
-                    System.out.println("ero");
-                    break;
+        while (opcao != 0 && opcao != 3) {
+            try {
+                System.out.println("""
+                        
+                        Filtrar por:
+                        1. Autor
+                        2. Termo
+                        3. Voltar pro meu principal
+                        0. Sair
+                        ======================================
+                        Digite a opção desejada:""");
+                opcao = scanner.nextInt();
+                switch (opcao) {
+                    case 0:
+                        System.out.println("\033[93mSaindo...\033[39m");
+                        break;
+                    case 1:
+                        filtrarMensagensPorAutor();
+                        break;
+                    case 2:
+                        filtrarMensagensPorTermo();
+                        break;
+                    case 3:
+                        break;
+                    default:
+                        System.out.println("\033[91mOpção Inválida\033[39m");
+                        break;
+                }
+            } catch (InputMismatchException e) {
+                scanner.nextLine();
+                System.out.println("\033[91mValor Inválido\033[39m");
             }
         }
-    }
+    }// Exibe as opções de filtragem das mensagens
 
     private void filtrarMensagensPorAutor() {
         System.out.println("\nDigite o nome do autor:");
@@ -232,23 +254,33 @@ public class Menu {
                 .filter(u -> Normalizer.normalize(u.getNomeUsuario(), Normalizer.Form.NFD)
                         .replaceAll("\\p{M}", "")
                         .equalsIgnoreCase(nomeAutor))
-                .toList().getFirst();
+                .toList();
+
+        if (autor.isEmpty()) {
+            System.out.println("Usuário não encontrado.");
+            return;
+        }
 
         var servidoresDoUsuario = servidores.stream()
-                .filter(s -> s.getUsuariosServidor().contains(autor))
+                .filter(s -> s.getUsuariosServidor().contains(autor.getFirst()))
                 .collect(Collectors.toList());
 
         servidoresDoUsuario.removeIf(servidor -> servidor.getMensagemsServidor().stream()
-                .noneMatch(s -> s.getAutorMensagem() == autor));
+                .noneMatch(s -> s.getAutorMensagem() == autor.getFirst()));
 
-        System.out.println("Filtrando mensagens de " + autor.getNomeUsuario() + ":");
+        if (servidoresDoUsuario.isEmpty()) {
+            System.out.println("O usuário não mandou mensagem nenhuma.");
+            return;
+        }
+
+        System.out.println("Filtrando mensagens de \033[4m" + autor.getFirst().getNomeUsuario() + "\033[24m:");
         servidoresDoUsuario.forEach(s -> {
-            System.out.println("\nServidor: " + s.getNomeServidor());
+            System.out.printf("\nServidor: \033[1;4m%s\033[22;24m", s.getNomeServidor());
             s.getMensagemsServidor().stream()
-                    .filter(m -> m.getAutorMensagem() == autor)
+                    .filter(m -> m.getAutorMensagem() == autor.getFirst())
                     .forEach(Mensagem::mostrarMensagem);
         });
-    }
+    }// Filtra mensagens por Autor
 
     private void filtrarMensagensPorTermo() {
         System.out.println("\nDigite o termo:");
@@ -259,41 +291,55 @@ public class Menu {
                         .anyMatch(m -> m.getConteudo().contains(termo)))
                 .toList();
 
+        if (servidoresComTermo.isEmpty()) {
+            System.out.printf("Nenhum mensagem com \"%s\"\n", termo);
+            return;
+        }
+
         servidoresComTermo.forEach(s -> {
             System.out.println("\nServidor: " + s.getNomeServidor());
             s.getMensagemsServidor().stream()
                     .filter(m -> m.getConteudo().contains(termo))
                     .forEach(Mensagem::mostrarMensagem);
         });
-    }
+    }// Filtra mensagens por Termo
 
     private void exibirMenuOrdenarMensagens() {
-        while (opcao != 0) {
-            System.out.println("""
-                                        
-                    Deseja Ordenar por:
-                    1. Data
-                    2. Autor
-                    0. Sair
-                    ======================================
-                    Digite a opção desejada:""");
-            opcao = scanner.nextInt();
-            switch (opcao) {
-                case 0:
-                    break;
-                case 1:
-                    ordenarMensagensPorData();
-                    break;
-                case 2:
-                    ordenarMensagensPorAutor();
-                    break;
-                default:
-                    System.out.println("ero");
-                    break;
+        while (opcao != 0 && opcao != 3) {
+            try {
+                System.out.println("""
+                        
+                        Deseja Ordenar por:
+                        1. Data
+                        2. Autor
+                        3. Voltar ao menu principal
+                        0. Sair
+                        ======================================
+                        Digite a opção desejada:""");
+                opcao = scanner.nextInt();
+                switch (opcao) {
+                    case 0:
+                        System.out.println("\033[93mSaindo...\033[39m");
+                        break;
+                    case 1:
+                        ordenarMensagensPorData();
+                        break;
+                    case 2:
+                        ordenarMensagensPorAutor();
+                        break;
+                    case 3:
+                        break;
+                    default:
+                        System.out.println("\033[91mOpção Inválida\033[39m");
+                        break;
+                }
+            } catch (InputMismatchException e) {
+                scanner.nextLine();
+                System.out.println("\033[91mValor Inválido\033[39m");
             }
         }
 
-    }
+    }// Exibe as opções de ordenação das mensagens
 
     private void ordenarMensagensPorData() {
         servidores.forEach(s -> {
@@ -304,7 +350,7 @@ public class Menu {
                         .forEach(Mensagem::mostrarMensagem);
             }
         });
-    }
+    }// Ordenar mensagens por Data
 
     private void ordenarMensagensPorAutor() {
         System.out.println("\nDigite o nome do autor:");
@@ -319,8 +365,8 @@ public class Menu {
         servidores.forEach(s -> {
             if (!s.getMensagemsServidor().isEmpty() &&
                     !s.getMensagemsServidor().stream()
-                    .filter(m -> m.getAutorMensagem() == autor)
-                    .toList().isEmpty()) {
+                            .filter(m -> m.getAutorMensagem() == autor)
+                            .toList().isEmpty()) {
 
                 System.out.println("\nServidor: " + s.getNomeServidor());
 
@@ -336,11 +382,32 @@ public class Menu {
             }
         });
 
-    }
+    }// Ordenar mensagens por Autor
 
-    private void exibirMenuEstatisticasServidores() {
+    private void exibirEstatisticasServidores() {
+        servidores.forEach(s -> {
 
-    }
+            var nomeServidor = s.getNomeServidor();
+            var totalUsuarios = s.getUsuariosServidor().size();
+            var usuarioComMaisMensagem = s.getMensagemsServidor().stream()
+                    .collect(Collectors.groupingBy(Mensagem::getAutorMensagem, Collectors.counting()))
+                    .entrySet()
+                    .stream()
+                    .max(Map.Entry.comparingByValue())
+                    .map(Map.Entry::getKey)
+                    .orElse(null);
+            var totalMensagens = s.getMensagemsServidor().size();
 
+            System.out.printf("""
+                    
+                    Servidor "%s"
+                    
+                    n° Usuários: %d
+                    n° Mensagens: %d
+                    Usuário que mais mandou mensagem: %s
+                    ==============================
+                    """, nomeServidor, totalUsuarios, totalMensagens, usuarioComMaisMensagem == null ? "Sem Mensagens" : usuarioComMaisMensagem.getNomeUsuario());
+        });
+    }// Exibe os dados dos servidores ( número de usuários / número de mensagens / usuário que mais mandou mensagem)
 
 }
