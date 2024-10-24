@@ -275,7 +275,7 @@ public class Menu {
 
         System.out.println("Filtrando mensagens de \033[4m" + autor.getFirst().getNomeUsuario() + "\033[24m:");
         servidoresDoUsuario.forEach(s -> {
-            System.out.printf("\nServidor: \033[1;4m%s\033[22;24m", s.getNomeServidor());
+            System.out.printf("\nServidor: \033[1;4m%s\033[22;24m\n", s.getNomeServidor());
             s.getMensagemsServidor().stream()
                     .filter(m -> m.getAutorMensagem() == autor.getFirst())
                     .forEach(Mensagem::mostrarMensagem);
@@ -297,7 +297,7 @@ public class Menu {
         }
 
         servidoresComTermo.forEach(s -> {
-            System.out.println("\nServidor: " + s.getNomeServidor());
+            System.out.printf("\nServidor: \033[1;4m%s\033[22;24m\n", s.getNomeServidor());
             s.getMensagemsServidor().stream()
                     .filter(m -> m.getConteudo().contains(termo))
                     .forEach(Mensagem::mostrarMensagem);
